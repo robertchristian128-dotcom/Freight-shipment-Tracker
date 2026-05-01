@@ -1,11 +1,5 @@
-from monitor import check_shipments
-from report import send_daily_report
+from sheets import get_freight_data
 
-if __name__ == "__main__":
-    print("Running shipment monitor...")
-    check_shipments()
-    
-    print("Sending daily report...")
-    send_daily_report()
-    
-    print("Done.")
+data = get_freight_data()
+
+print(data)
