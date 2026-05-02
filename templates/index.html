@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreightTrack Pro — Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0c10;
+            --surface: #111318;
+            --surface2: #181c24;
+            --border: #1e2330;
+            --accent: #00d4aa;
+            --accent2: #0088ff;
+            --danger: #ff4444;
+            --warning: #ffaa00;
+            --success: #00d4aa;
+            --text: #e8eaf0;
+            --muted: #6b7280;
+            --card-glow: 0 0 40px rgba(0, 212, 170, 0.04);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            width: 240px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 28px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-mark {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .nav {
+            padding: 20px 12px;
+            flex: 1;
+        }
+
+        .nav-label {
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 12px;
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .nav-item:hover {
+            background: var(--surface2);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-left: auto;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .sidebar-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: 240px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 12, 16, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: 'DM Mono', monospace;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: #00f0c0;
+            box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--surface2);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            border-color: rgba(255, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 68, 68, 0.1);
+        }
+
+        /* ── CONTENT ── */
+        .content {
+            padding: 32px;
+        }
+
+        /* ── FLASH MESSAGES ── */
+        .flash-container {
+            margin-bottom: 24px;
+        }
+
+        .flash {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 8px;
+            border: 1px solid;
+        }
+
+        .flash.success {
+            background: rgba(0, 212, 170, 0.1);
+            border-color: rgba(0, 212, 170, 0.3);
+            color: var(--accent);
+        }
+
+        .flash.error {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: rgba(255, 68, 68, 0.3);
+            color: var(--danger);
+        }
+
+        /* ── STATS GRID ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(0, 212, 170, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+        }
+
+        .stat-card.total::before { background: var(--accent2); }
+        .stat-card.transit::before { background: var(--accent); }
+        .stat-card.delayed::before { background: var(--danger); }
+        .stat-card.delivered::before { background: #00d4aa; }
+
+        .stat-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stat-card.total .stat-value { color: var(--accent2); }
+        .stat-card.transit .stat-value { color: var(--accent); }
+        .stat-card.delayed .stat-value { color: var(--danger); }
+        .stat-card.delivered .stat-value { color: var(--success); }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* ── MINI STATS ── */
+        .mini-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .mini-stat {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mini-stat-label {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .mini-stat-value {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* ── TABLE ── */
+        .table-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .table-count {
+            font-size: 11px;
+            color: var(--muted);
+            background: var(--surface2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--surface2); }
+
+        tbody td {
+            padding: 14px 16px;
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        .shipment-id {
+            font-family: 'DM Mono', monospace;
+            color: var(--accent);
+            font-size: 11px;
+        }
+
+        .route {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .route span {
+            color: var(--text);
+        }
+
+        /* ── STATUS BADGES ── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            border: 1px solid;
+        }
+
+        .badge::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+        }
+
+        .badge-pending { 
+            background: rgba(107, 114, 128, 0.15); 
+            color: #9ca3af; 
+            border-color: rgba(107, 114, 128, 0.3);
+        }
+        .badge-pending::before { background: #9ca3af; }
+
+        .badge-transit { 
+            background: rgba(0, 136, 255, 0.15); 
+            color: #60a5fa; 
+            border-color: rgba(0, 136, 255, 0.3);
+        }
+        .badge-transit::before { background: #60a5fa; }
+
+        .badge-arrived { 
+            background: rgba(168, 85, 247, 0.15); 
+            color: #c084fc; 
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+        .badge-arrived::before { background: #c084fc; }
+
+        .badge-cleared { 
+            background: rgba(251, 191, 36, 0.15); 
+            color: #fbbf24; 
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+        .badge-cleared::before { background: #fbbf24; }
+
+        .badge-delivered { 
+            background: rgba(0, 212, 170, 0.15); 
+            color: var(--accent); 
+            border-color: rgba(0, 212, 170, 0.3);
+        }
+        .badge-delivered::before { background: var(--accent); animation: pulse 2s infinite; }
+
+        .badge-delayed { 
+            background: rgba(255, 68, 68, 0.15); 
+            color: #f87171; 
+            border-color: rgba(255, 68, 68, 0.3);
+        }
+        .badge-delayed::before { background: #f87171; animation: pulse 1s infinite; }
+
+        /* ── ANIMATIONS ── */
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(10px); }
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.05s; }
+        .stat-card:nth-child(2) { animation-delay: 0.1s; }
+        .stat-card:nth-child(3) { animation-delay: 0.15s; }
+        .stat-card:nth-child(4) { animation-delay: 0.2s; }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            padding: 60px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-mark">⚓ FreightTrack</div>
+        <div class="logo-sub">Pro Dashboard</div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">Main</div>
+        <a href="{{ url_for('index') }}" class="nav-item active">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+            Dashboard
+            <span class="status-dot"></span>
+        </a>
+        <a href="{{ url_for('add_shipment') }}" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add Shipment
+        </a>
+
+        <div class="nav-label">Actions</div>
+        <a href="{{ url_for('run_monitor') }}" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Run Monitor
+        </a>
+        <a href="{{ url_for('send_report') }}" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Email Report
+        </a>
+        <a href="{{ url_for('download_report') }}" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Download Report
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        System v1.0.0<br>
+        Built by You 🚀
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title">Shipment Overview</div>
+        <div class="topbar-actions">
+            <a href="{{ url_for('run_monitor') }}" class="btn btn-ghost">
+                ⚡ Run Monitor
+            </a>
+            <a href="{{ url_for('add_shipment') }}" class="btn btn-primary">
+                + Add Shipment
+            </a>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card total fade-in">
+                <div class="stat-label">Total Shipments</div>
+                <div class="stat-value">{{ stats.total }}</div>
+                <div class="stat-sub">All active records</div>
+            </div>
+            <div class="stat-card transit fade-in">
+                <div class="stat-label">In Transit</div>
+                <div class="stat-value">{{ stats.in_transit }}</div>
+                <div class="stat-sub">Currently moving</div>
+            </div>
+            <div class="stat-card delayed fade-in">
+                <div class="stat-label">Delayed</div>
+                <div class="stat-value">{{ stats.delayed }}</div>
+                <div class="stat-sub">Needs attention</div>
+            </div>
+            <div class="stat-card delivered fade-in">
+                <div class="stat-label">Delivered</div>
+                <div class="stat-value">{{ stats.delivered }}</div>
+                <div class="stat-sub">Completed</div>
+            </div>
+        </div>
+
+        <!-- Mini Stats -->
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <span class="mini-stat-label">⏳ Pending</span>
+                <span class="mini-stat-value">{{ stats.pending }}</span>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-stat-label">🚢 Arrived at Port</span>
+                <span class="mini-stat-value">{{ stats.arrived }}</span>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-stat-label">✅ Cleared</span>
+                <span class="mini-stat-value">{{ stats.cleared }}</span>
+            </div>
+        </div>
+
+        <!-- Shipments Table -->
+        <div class="table-section fade-in">
+            <div class="table-header">
+                <span class="table-title">All Shipments</span>
+                <span class="table-count">{{ stats.total }} records</span>
+            </div>
+
+            {% if shipments %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Shipment ID</th>
+                        <th>Client</th>
+                        <th>Route</th>
+                        <th>Status</th>
+                        <th>ETA</th>
+                        <th>Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in shipments %}
+                    <tr>
+                        <td><span class="shipment-id">{{ s['Shipment ID'] }}</span></td>
+                        <td>
+                            <div>{{ s['Client Name'] }}</div>
+                            <div style="font-size:11px; color: var(--muted);">{{ s['Client Email'] }}</div>
+                        </td>
+                        <td>
+                            <div class="route">
+                                <span>{{ s['Origin'] }}</span>
+                                <span style="color: var(--muted);"> → </span>
+                                <span>{{ s['Destination'] }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if s['Status'] == 'Pending' %}
+                                <span class="badge badge-pending">Pending</span>
+                            {% elif s['Status'] == 'In Transit' %}
+                                <span class="badge badge-transit">In Transit</span>
+                            {% elif s['Status'] == 'Arrived at Port' %}
+                                <span class="badge badge-arrived">Arrived at Port</span>
+                            {% elif s['Status'] == 'Cleared' %}
+                                <span class="badge badge-cleared">Cleared</span>
+                            {% elif s['Status'] == 'Delivered' %}
+                                <span class="badge badge-delivered">Delivered</span>
+                            {% elif s['Status'] == 'Delayed' %}
+                                <span class="badge badge-delayed">Delayed</span>
+                            {% else %}
+                                <span class="badge badge-pending">{{ s['Status'] }}</span>
+                            {% endif %}
+                        </td>
+                        <td style="color: var(--muted); font-size: 12px;">{{ s['ETA'] }}</td>
+                        <td style="color: var(--muted); font-size: 12px;">{{ s['Last Updated'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🚢</div>
+                <p>No shipments found. Add your first shipment to get started.</p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

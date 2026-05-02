@@ -8,4 +8,12 @@ if __name__ == "__main__":
     print("Sending daily report...")
     send_daily_report()
     
-    print("Done.")
+    
+try:
+    send_email(message)
+except Exception as e:
+    with open("log.txt", "a") as f:
+        f.write(f"Error: {e}\n")
+
+with open("log.txt", "a") as f:
+    f.write("Email sent successfully\n")        

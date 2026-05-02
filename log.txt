@@ -1,0 +1,6 @@
+2026-05-02 13:42:35,795 - Failed to write shipment: HTTPSConnectionPool(host='sheets.googleapis.com', port=443): Max retries exceeded with url: /v4/spreadsheets/1p1uLcVRrbOmU7u9O1II5XQzQhVjFL9HP_hmrsI-MO6E?includeGridData=false (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)')))
+2026-05-02 13:48:20,007 - New shipment added: FRT-2024-011 - Delta Offshore Supplies
+Error: name 'send_email' is not defined
+Email sent successfully
+Error: name 'send_email' is not defined
+Email sent successfully

@@ -1,0 +1,11 @@
+Shipment ID,Client Name,Client Email,Origin,Destination,Status,ETA,Last Updated
+FRT-2024-001,Dangote Industries Ltd,dangote.logistics@gmail.com,"Shanghai, China","Apapa Port, Lagos",In Transit,05/05/2026,30/04/2026
+FRT-2024-002,Zenith Impex Nigeria,zenith.impex@gmail.com,"Hamburg, Germany","Tin Can Port, Lagos",Delayed,28/04/2026,30/04/2026
+FRT-2024-003,Eko Atlantic Traders,ekoatlantic.trade@gmail.com,"Dubai, UAE","Apapa Port, Lagos",Cleared,02/05/2026,29/04/2026
+FRT-2024-004,Chukwuemeka & Sons Ltd,chukwuemeka.sons@gmail.com,"Guangzhou, China","Onne Port, Rivers",Delivered,29/04/2026,29/04/2026
+FRT-2024-005,Abuja Global Imports,abuja.globalimports@gmail.com,"Rotterdam, Netherlands","Apapa Port, Lagos",Pending,10/05/2026,30/04/2026
+FRT-2024-006,Westcoast Merchandise,westcoast.merch@gmail.com,"Antwerp, Belgium","Tin Can Port, Lagos",In Transit,07/05/2026,30/04/2026
+FRT-2024-007,Nnamdi Okafor Ventures,nnamdi.okafor@gmail.com,"Shenzhen, China","Apapa Port, Lagos",Delayed,25/04/2026,30/04/2026
+FRT-2024-008,Kano Northern Traders,kano.northerntraders@gmail.com,"Mumbai, India","Apapa Port, Lagos",Arrived at Port,30/04/2026,30/04/2026
+FRT-2024-009,Lagos Free Zone Corp,lagosfz.corp@gmail.com,"Felixstowe, UK","Onne Port, Rivers",In Transit,12/05/2026,30/04/2026
+FRT-2024-010,Southgate Commodities,southgate.comm@gmail.com,"Jebel Ali, UAE","Apapa Port, Lagos",Delivered,28/04/2026,28/04/2026
