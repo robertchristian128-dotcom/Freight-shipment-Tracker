@@ -108,7 +108,27 @@
             background: none;
             width: 100%;
             text-align: left;
+            font-family: 'DM Mono', monospace
+        }
+        
+        .btn-archive {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
             font-family: 'DM Mono', monospace;
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-archive:hover {
+            background: rgba(0, 212, 170, 0.2);
+            box-shadow: 0 0 12px rgba(0, 212, 170, 0.2);
         }
 
         .nav-item:hover {
@@ -545,8 +565,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
             Add Shipment
-        </a>
-
+       </a>
+       <a href="/archived" class="nav-item"></a>
+           <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+           </svg>
+           Archive
+       </a>     
         <div class="nav-label">Actions</div>
         <a href="{{ url_for('run_monitor') }}" class="nav-item">
             <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -657,6 +682,7 @@
                         <th>Status</th>
                         <th>ETA</th>
                         <th>Last Updated</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -691,6 +717,17 @@
                                 <span class="badge badge-pending">{{ s['Status'] }}</span>
                             {% endif %}
                         </td>
+                        <td>
+    {% if s['Status'] == 'Delivered' %}
+    <a href="{{ url_for('archive_shipment_route', shipment_id=s['Shipment ID']) }}" 
+       class="btn-archive"
+       onclick="return confirm('Archive this shipment?')">
+        Archive
+    </a>
+    {% else %}
+    <span style="color: var(--muted); font-size: 11px;">—</span>
+    {% endif %}
+</td>
                         <td style="color: var(--muted); font-size: 12px;">{{ s['ETA'] }}</td>
                         <td style="color: var(--muted); font-size: 12px;">{{ s['Last Updated'] }}</td>
                     </tr>

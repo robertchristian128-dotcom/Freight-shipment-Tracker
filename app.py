@@ -28,6 +28,16 @@ def get_all_shipments():
     return sheet.get_all_records()
 
 # ─── ROUTES ───────────────────────────────────────────────
+@app.route("/archived")
+def archived_shipments():
+    try:
+        import sheets
+        archive_sheet = sheets.get_archive_sheet()
+        records = archive_sheet.get_all_records()
+        return render_template("archived.html", shipments=records)
+    except Exception as e:
+        flash(f"Error loading archive: {str(e)}", "error")
+        return redirect(url_for("index"))
 
 @app.route("/")
 def index():
@@ -108,8 +118,8 @@ def download_report():
         cleared = [s for s in shipments if s["Status"] == "Cleared"]
         arrived = [s for s in shipments if s["Status"] == "Arrived at Port"]
 
-        report = f"""DAILY SHIPMENT REPORT — {date.today()}
 
+        report = f"""DAILY SHIPMENT REPORT — {date.today()}
 ========================================
 SUMMARY
 ========================================
@@ -162,5 +172,20 @@ PENDING SHIPMENTS:
         flash(f"Download error: {str(e)}", "error")
         return redirect(url_for("index"))
 
+@app.route("/archive/<shipment_id>")
+def archive_shipment_route(shipment_id):
+    try:
+        import sheets
+        success = sheets.archive_shipment(shipment_id)
+        if success:
+            flash(f"Shipment {shipment_id} archived successfully!", "success")
+        else:
+            flash(f"Shipment {shipment_id} not found.", "error")
+    except Exception as e:
+        flash(f"Archive error: {str(e)}", "error")
+        print(f"ARCHIVE ERROR DETAIL: {str(e)}")
+    return redirect(url_for("index"))
 if __name__ == "__main__":
     app.run(debug=True)
+
+    print(f"ARCHIVE ERROR DETAIL: {str(e)}")
